@@ -9,7 +9,7 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/freemen810/dns-monitoring</Support>
   <Project>https://github.com/freemen810/dns-monitoring</Project>
-  <Overview>DNS Monitoring WebApp - Self-hosted DNS query monitoring and analytics. Clone from GitHub and build locally with docker-compose.</Overview>
+DNS Monitoring WebApp - Self-hosted DNS query monitoring and analytics. Multi-service deployment with nginx, backend API, and frontend UI.</Overview>
   <Category>Network</Category>
   <WebUI>http://[IP]:[PORT:3000]</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/dns-monitoring-unraid-compose-template.xml</TemplateURL>
@@ -21,11 +21,21 @@
 cd /mnt/user/appdata/dns-monitoring
 git clone https://github.com/freemen810/dns-monitoring.git . 2>/dev/null || git -C . pull
 
-# 2. Start with docker-compose
-docker-compose -f docker-compose.yml up -d
+# 2. Create required directories
+mkdir -p /mnt/user/appdata/dns-monitoring/data
+
+# 3. Set proper permissions
+chmod 755 /mnt/user/appdata/dns-monitoring/data
+
+# 4. Start with docker-compose (production config)
+docker-compose -f docker-compose.prod.yml up -d
+
+# 5. Wait for services to be healthy
+sleep 5
+docker-compose -f docker-compose.prod.yml ps
   </RunCmd>
-  <StopCmd>cd /mnt/user/appdata/dns-monitoring && docker-compose down</StopCmd>
-  <RemoveCmd>cd /mnt/user/appdata/dns-monitoring && docker-compose down -v && rm -rf .</RemoveCmd>
+  <StopCmd>cd /mnt/user/appdata/dns-monitoring && docker-compose -f docker-compose.prod.yml down</StopCmd>
+  <RemoveCmd>cd /mnt/user/appdata/dns-monitoring && docker-compose -f docker-compose.prod.yml down -v && rm -rf .</RemoveCmd>
   <ReopenCommand/>
   <RestartPolicy>unless-stopped</RestartPolicy>
   <Environment>
