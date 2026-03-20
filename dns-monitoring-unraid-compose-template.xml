@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Container version="2">
+  <Name>dns-monitoring</Name>
+  <Repository></Repository>
+  <Registry></Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/freemen810/dns-monitoring</Support>
+  <Project>https://github.com/freemen810/dns-monitoring</Project>
+  <Overview>DNS Monitoring WebApp - Self-hosted DNS query monitoring and analytics. Clone from GitHub and build locally with docker-compose.</Overview>
+  <Category>Network</Category>
+  <WebUI>http://[IP]:[PORT:3000]</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/dns-monitoring-unraid-compose-template.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/icon.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <RunCmd>
+# 1. Clone the repository
+cd /mnt/user/appdata/dns-monitoring
+git clone https://github.com/freemen810/dns-monitoring.git . 2>/dev/null || git -C . pull
+
+# 2. Start with docker-compose
+docker-compose -f docker-compose.yml up -d
+  </RunCmd>
+  <StopCmd>cd /mnt/user/appdata/dns-monitoring && docker-compose down</StopCmd>
+  <RemoveCmd>cd /mnt/user/appdata/dns-monitoring && docker-compose down -v && rm -rf .</RemoveCmd>
+  <ReopenCommand/>
+  <RestartPolicy>unless-stopped</RestartPolicy>
+  <Environment>
+    <Variable Name="TZ" Value="Asia/Singapore" Description="Timezone"/>
+  </Environment>
+  <Networking>
+    <Mode>bridge</Mode>
+    <Publish>
+      <Port>
+        <HostPort>3000</HostPort>
+        <ContainerPort>80</ContainerPort>
+        <Protocol>tcp</Protocol>
+      </Port>
+    </Publish>
+  </Networking>
+  <Data>
+    <Volume>
+      <HostDir>/mnt/user/appdata/dns-monitoring</HostDir>
+      <ContainerDir>/mnt/user/appdata/dns-monitoring</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+  </Data>
+  <Description>
+DNS Monitoring - Self-hosted DNS query monitoring and analytics web application.
+
+This template uses docker-compose to build from source on your Unraid system.
+
+Installation:
+1. Add this container via template
+2. The RunCmd will automatically:
+   - Clone the GitHub repository to /mnt/user/appdata/dns-monitoring
+   - Build the Docker image
+   - Start the container
+
+Features:
+- Real-time DNS query monitoring and logging
+- React-based web dashboard
+- Express.js REST API
+- SQLite database for persistent storage
+- Query analytics and reporting
+- Configurable DNS servers
+
+Access:
+- Web UI: http://[IP]:3000
+- All services start automatically
+
+Data:
+- Database: /mnt/user/appdata/dns-monitoring/data/dns-monitoring.db
+- Project files: /mnt/user/appdata/dns-monitoring
+
+GitHub: https://github.com/freemen810/dns-monitoring
+  </Description>
+  <Labels/>
+  <Config Name="WebUI Port" Target="3000" Default="3000" Mode="tcp" Description="Port for web interface" Type="Port" Display="always" Required="true" Mask="false"/>
+  <Config Name="App Data Path" Target="/mnt/user/appdata/dns-monitoring" Default="/mnt/user/appdata/dns-monitoring" Mode="rw" Description="Path for application and database" Type="Path" Display="always" Required="true" Mask="false"/>
+  <Config Name="Timezone" Target="TZ" Default="Asia/Singapore" Mode="" Description="Container timezone" Type="Variable" Display="always" Required="false" Mask="false"/>
+</Container>
