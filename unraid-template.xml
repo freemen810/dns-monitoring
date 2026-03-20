@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Container version="2">
   <Name>dns-monitoring</Name>
-  <Repository>ghcr.io/freemen810/dns-monitoring:latest</Repository>
-  <Registry>https://github.com/freemen810/dns-monitoring/pkgs/container/dns-monitoring</Registry>
+  <Repository>dns-monitoring:latest</Repository>
+  <Registry>https://github.com/freemen810/dns-monitoring</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>sh</Shell>
@@ -13,6 +13,14 @@
   <Category>Network</Category>
   <WebUI>http://[IP]:[PORT:80]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/unraid-template.xml</TemplateURL>
+  <Instructions>
+    Build and load the image locally first:
+    git clone https://github.com/freemen810/dns-monitoring
+    cd dns-monitoring
+    docker build -t dns-monitoring:latest .
+
+    Then use this template to create the container on Unraid.
+  </Instructions>
   <Icon>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/frontend/public/favicon.ico</Icon>
   <ExtraParams>--restart=unless-stopped</ExtraParams>
   <PostArgs/>
