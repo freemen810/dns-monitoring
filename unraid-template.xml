@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Container version="2">
   <Name>dns-monitoring</Name>
-  <Repository>dns-monitoring:latest</Repository>
-  <Registry>https://github.com/freemen810/dns-monitoring</Registry>
+  <Repository>freemen810/dns-monitoring:latest</Repository>
+  <Registry>https://hub.docker.com/r/freemen810/dns-monitoring</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>sh</Shell>
@@ -14,12 +14,16 @@
   <WebUI>http://[IP]:[PORT:80]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/unraid-template.xml</TemplateURL>
   <Instructions>
-    Build and load the image locally first:
-    git clone https://github.com/freemen810/dns-monitoring
-    cd dns-monitoring
-    docker build -t dns-monitoring:latest .
+    Option 1 - Build locally on Unraid:
 
-    Then use this template to create the container on Unraid.
+    1. SSH into Unraid terminal
+    2. git clone https://github.com/freemen810/dns-monitoring
+    3. cd dns-monitoring
+    4. docker build -t freemen810/dns-monitoring:latest .
+    5. Use this template to create the container
+
+    Option 2 - Pull from Docker Hub (after image is published):
+    docker pull freemen810/dns-monitoring:latest
   </Instructions>
   <Icon>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/frontend/public/favicon.ico</Icon>
   <ExtraParams>--restart=unless-stopped</ExtraParams>

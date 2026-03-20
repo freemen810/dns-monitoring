@@ -56,4 +56,3 @@ build
 # Misc
 docker-compose.yml
 Dockerfile*
-nginx.conf
