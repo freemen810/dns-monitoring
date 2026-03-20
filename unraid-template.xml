@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Container version="2">
   <Name>dns-monitoring</Name>
-  <Repository>freemen810/dns-monitoring</Repository>
-  <Registry>https://hub.docker.com/r/freemen810</Registry>
+  <Repository>freemen810/dns-monitoring:latest</Repository>
+  <Registry>https://hub.docker.com</Registry>
   <Network>bridge</Network>
-  <MyIP/>
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
-  <Support>https://github.com/freemen810/dns-monitoring/issues</Support>
+  <Support>https://github.com/freemen810/dns-monitoring</Support>
   <Project>https://github.com/freemen810/dns-monitoring</Project>
-  <Overview>DNS Monitoring - Self-hosted DNS query monitoring and analytics. Pre-built image from Docker Hub</Overview>
+  <Overview>DNS Monitoring - Self-hosted DNS query monitoring with React frontend and Express backend</Overview>
   <Category>Network:DNS</Category>
   <WebUI>http://[IP]:[PORT:3000]</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/unraid-template.xml</TemplateURL>
@@ -19,18 +18,15 @@
   <RunCmd/>
   <StopCmd/>
   <RemoveCmd/>
-  <ReopenCommand/>
   <RestartPolicy>unless-stopped</RestartPolicy>
   <Environment>
     <Variable Name="TZ" Value="Asia/Singapore" Description="Timezone"/>
     <Variable Name="NODE_ENV" Value="production" Description="Node environment"/>
-    <Variable Name="PORT" Value="3000" Description="Backend port"/>
-    <Variable Name="CORS_ORIGIN" Value="*" Description="CORS origin for API requests"/>
-    <Variable Name="DATABASE_PATH" Value="/app/data/dns-monitoring.db" Description="Database path inside container"/>
-    <Variable Name="DEFAULT_DNS_SERVER" Value="1.1.1.1" Description="Default DNS server (1.1.1.1=Cloudflare, 8.8.8.8=Google)"/>
-    <Variable Name="QUERY_TIMEOUT_MS" Value="5000" Description="DNS query timeout in milliseconds"/>
-    <Variable Name="LOG_LEVEL" Value="info" Description="Log level (debug/info/warn/error)"/>
-    <Variable Name="QUERY_RETENTION_DAYS" Value="30" Description="Days to retain DNS query history"/>
+    <Variable Name="CORS_ORIGIN" Value="*" Description="CORS origin"/>
+    <Variable Name="DEFAULT_DNS_SERVER" Value="1.1.1.1" Description="Default DNS server"/>
+    <Variable Name="QUERY_TIMEOUT_MS" Value="5000" Description="Query timeout ms"/>
+    <Variable Name="LOG_LEVEL" Value="info" Description="Log level"/>
+    <Variable Name="QUERY_RETENTION_DAYS" Value="30" Description="Retention days"/>
   </Environment>
   <Networking>
     <Mode>bridge</Mode>
@@ -44,69 +40,30 @@
   </Networking>
   <Data>
     <Volume>
-      <HostDir>/mnt/user/appdata/dns-monitoring/data</HostDir>
+      <HostDir>/mnt/user/appdata/dns-monitoring</HostDir>
       <ContainerDir>/app/data</ContainerDir>
       <Mode>rw</Mode>
     </Volume>
   </Data>
-  <Labels>
-    <Label Key="net.unraid.docker.managed">dockerman</Label>
-    <Label Key="net.unraid.docker.webui">http://[IP]:[PORT:3000]</Label>
-  </Labels>
   <Description>
-DNS Monitoring - Self-hosted DNS query monitoring and analytics web application
+DNS Monitoring Web Application
 
-Pre-built image available on Docker Hub: freemen810/dns-monitoring:latest
+Real-time DNS query monitoring and analytics dashboard.
 
-FEATURES:
-- Real-time DNS query monitoring and logging
-- React-based web dashboard with analytics
-- Express.js REST API backend
-- SQLite database for persistent storage
-- Query history and reporting
-- Fully configurable via environment variables
-- Production-ready deployment
+Features:
+- Real-time DNS query monitoring
+- React-based web dashboard
+- REST API backend
+- SQLite database
+- Query analytics
 
-QUICK START:
-1. Add this container via the Unraid Docker template
-2. Configure desired port (default 3000)
-3. Set data volume path (default /mnt/user/appdata/dns-monitoring/data)
-4. Adjust environment variables as needed
-5. Click Apply to start
+Access: http://[IP]:3000
 
-WEB ACCESS:
-- Default URL: http://[YOUR_UNRAID_IP]:3000
-
-DATA PERSISTENCE:
-- Database: /mnt/user/appdata/dns-monitoring/data/dns-monitoring.db
-- All queries and analytics stored persistently
-
-CONFIGURATION:
-- Port: Configurable in template (default 3000)
-- DNS Server: Configure DEFAULT_DNS_SERVER variable
-  * 1.1.1.1 = Cloudflare
-  * 8.8.8.8 = Google
-  * 9.9.9.9 = Quad9
-- Query Timeout: Adjustable via QUERY_TIMEOUT_MS
-- Retention: Set via QUERY_RETENTION_DAYS
-- Logging: Control via LOG_LEVEL
-
-DOCKER HUB:
-https://hub.docker.com/r/freemen810/dns-monitoring
-
-GITHUB REPOSITORY:
-https://github.com/freemen810/dns-monitoring
-
-SUPPORT:
-https://github.com/freemen810/dns-monitoring/issues
+GitHub: https://github.com/freemen810/dns-monitoring
   </Description>
-  <Config Name="Host Port" Target="3000" Default="3000" Mode="tcp" Description="Web UI port (change to your desired port)" Type="Port" Display="always" Required="true" Mask="false"/>
-  <Config Name="Data Volume" Target="/app/data" Default="/mnt/user/appdata/dns-monitoring/data" Mode="rw" Description="Path for DNS monitoring database" Type="Path" Display="always" Required="true" Mask="false"/>
-  <Config Name="TZ" Target="TZ" Default="Asia/Singapore" Mode="" Description="Container timezone" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="NODE_ENV" Target="NODE_ENV" Default="production" Mode="" Description="Node environment (production/development)" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="CORS_ORIGIN" Target="CORS_ORIGIN" Default="*" Mode="" Description="CORS origin for API requests" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="DEFAULT_DNS_SERVER" Target="DEFAULT_DNS_SERVER" Default="1.1.1.1" Mode="" Description="Default DNS server (1.1.1.1/8.8.8.8/9.9.9.9)" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="QUERY_TIMEOUT_MS" Target="QUERY_TIMEOUT_MS" Default="5000" Mode="" Description="DNS query timeout (milliseconds)" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="LOG_LEVEL" Target="LOG_LEVEL" Default="info" Mode="" Description="Log level (debug/info/warn/error)" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="QUERY_RETENTION_DAYS" Target="QUERY_RETENTION_DAYS" Default="30" Mode="" Description="Days to retain query history" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="Host Port" Target="3000" Default="3000" Mode="tcp" Description="Web UI Port" Type="Port" Display="always" Required="true" Mask="false"/>
+  <Config Name="Data Path" Target="/app/data" Default="/mnt/user/appdata/dns-monitoring" Mode="rw" Description="Data Volume Path" Type="Path" Display="always" Required="true" Mask="false"/>
+  <Config Name="Timezone" Target="TZ" Default="Asia/Singapore" Mode="" Description="Container Timezone" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="DNS Server" Target="DEFAULT_DNS_SERVER" Default="1.1.1.1" Mode="" Description="Default DNS Server" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="Log Level" Target="LOG_LEVEL" Default="info" Mode="" Description="Log Level" Type="Variable" Display="always" Required="false" Mask="false"/>
 </Container>
