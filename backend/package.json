@@ -1,0 +1,23 @@
+{
+  "name": "dns-monitoring-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "DNS monitoring backend with Express and SQLite",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "dns2": "^2.1.0",
+    "sqlite3": "^5.1.7",
+    "node-cron": "^3.0.3",
+    "dotenv": "^16.4.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
