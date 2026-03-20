@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Container version="2">
   <Name>dns-monitoring</Name>
-  <Repository>freemen810/dns-monitoring:latest</Repository>
-  <Registry>https://hub.docker.com</Registry>
+  <Repository>ghcr.io/freemen810/dns-monitoring:latest</Repository>
+  <Registry>https://ghcr.io</Registry>
   <Network>bridge</Network>
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
