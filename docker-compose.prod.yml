@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  dns-monitoring:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dns-monitoring-prod
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      CORS_ORIGIN: "*"
+      DATABASE_PATH: /app/data/dns-monitoring.db
+      DEFAULT_DNS_SERVER: 1.1.1.1
+      QUERY_TIMEOUT_MS: 5000
+      LOG_LEVEL: warn
+      QUERY_RETENTION_DAYS: 30
+    volumes:
+      - dns-data-prod:/app/data
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+volumes:
+  dns-data-prod:
+    driver: local
