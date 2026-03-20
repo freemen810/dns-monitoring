@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Container version="2">
   <Name>dns-monitoring</Name>
-  <Repository>freemen810/dns-monitoring</Repository>
-  <Registry>https://hub.docker.com/r/freemen810</Registry>
+  <Repository></Repository>
+  <Registry></Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
-  <Support>https://github.com/freemen810/dns-monitoring</Support>
+  <Support>https://github.com/freemen810/dns-monitoring/issues</Support>
   <Project>https://github.com/freemen810/dns-monitoring</Project>
-  <Overview>DNS Monitoring - Self-hosted DNS query monitoring and analytics. Deploys via docker-compose from GitHub</Overview>
+  <Overview>DNS Monitoring - Self-hosted DNS query monitoring and analytics. Deployed via docker-compose from GitHub source</Overview>
   <Category>Network:DNS</Category>
   <WebUI>http://[IP]:[PORT:3000]</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/unraid-template.xml</TemplateURL>
@@ -22,7 +22,6 @@
   <ReopenCommand/>
   <RestartPolicy>unless-stopped</RestartPolicy>
   <Environment>
-    <Variable Name="COMPOSE_PROJECT_NAME" Value="dns-monitoring" Description="Docker Compose project name"/>
     <Variable Name="TZ" Value="Asia/Singapore" Description="Timezone"/>
     <Variable Name="NODE_ENV" Value="production" Description="Node environment"/>
     <Variable Name="CORS_ORIGIN" Value="*" Description="CORS origin"/>
@@ -55,72 +54,88 @@
   <Description>
 DNS Monitoring - Self-hosted DNS query monitoring and analytics web application
 
-IMPORTANT: This template requires manual setup via SSH
+DEPLOYMENT METHOD: GitHub + docker-compose (no Docker Hub required)
 
-Setup Instructions:
+Quick Start via SSH:
 
 1. SSH into Unraid:
-   ssh root@HOSTNAME
+   ssh root@Avengers
 
-2. Create and clone project:
+2. Clone the repository:
    mkdir -p /mnt/user/appdata/dns-monitoring
    cd /mnt/user/appdata/dns-monitoring
    git clone https://github.com/freemen810/dns-monitoring.git .
 
-3. (Optional) Edit docker-compose.yml to change:
-   - Port: Change "3000:80" to desired port
-   - IP Address: Set static IP in docker-compose.yml
-   - Environment variables as needed
+3. (Optional) Edit docker-compose.prod.yml:
+   - Change port: modify "3000:80" to your desired port
+   - Configure IP: set static IP in docker-compose.prod.yml
+   - Adjust environment variables as needed
 
 4. Start services:
    docker-compose -f docker-compose.prod.yml up -d
 
-5. View logs:
-   docker-compose logs -f
+5. Access Web UI:
+   http://YOUR_UNRAID_IP:3000
 
-6. Access Web UI:
-   http://[YOUR_UNRAID_IP]:3000
-
-Features:
+FEATURES:
 - Real-time DNS query monitoring and logging
 - React-based web dashboard
-- Express.js REST API
+- Express.js REST API backend
 - SQLite database for persistent storage
 - Query analytics and reporting
 - Fully configurable via environment variables
+- Production-ready docker-compose setup
 
-Data Persistence:
+DATA PERSISTENCE:
 - Database: /mnt/user/appdata/dns-monitoring/data/dns-monitoring.db
 - All project files: /mnt/user/appdata/dns-monitoring/
 
-GitHub Repository:
-https://github.com/freemen810/dns-monitoring
+MANAGING THE CONTAINER:
 
-Managing the Container:
+View Logs:
+  cd /mnt/user/appdata/dns-monitoring && docker-compose logs -f
 
 Stop:
-  cd /mnt/user/appdata/dns-monitoring
-  docker-compose down
+  cd /mnt/user/appdata/dns-monitoring && docker-compose down
 
 Restart:
-  cd /mnt/user/appdata/dns-monitoring
-  docker-compose restart
+  cd /mnt/user/appdata/dns-monitoring && docker-compose restart
 
-Update:
+Restart with Rebuild:
+  cd /mnt/user/appdata/dns-monitoring && docker-compose down && docker-compose -f docker-compose.prod.yml up -d
+
+Update to Latest:
   cd /mnt/user/appdata/dns-monitoring
   git pull origin main
   docker-compose down
   docker-compose -f docker-compose.prod.yml up -d
 
-Logs:
+Remove Everything:
   cd /mnt/user/appdata/dns-monitoring
-  docker-compose logs -f dns-monitoring
+  docker-compose down -v
+  cd /mnt/user/appdata && rm -rf dns-monitoring
+
+ENVIRONMENT VARIABLES (customize in docker-compose.prod.yml):
+- NODE_ENV: Node.js environment (production/development)
+- CORS_ORIGIN: CORS origin for API requests
+- DEFAULT_DNS_SERVER: Primary DNS server (default: 1.1.1.1 Cloudflare)
+- QUERY_TIMEOUT_MS: DNS query timeout in milliseconds
+- LOG_LEVEL: Application log level (debug/info/warn/error)
+- QUERY_RETENTION_DAYS: How long to keep query history
+
+GITHUB REPOSITORY:
+https://github.com/freemen810/dns-monitoring
+
+SUPPORT:
+https://github.com/freemen810/dns-monitoring/issues
   </Description>
-  <Config Name="Host Port" Target="3000" Default="3000" Mode="tcp" Description="Web UI port (change to desired port like 8080)" Type="Port" Display="always" Required="true" Mask="false"/>
-  <Config Name="App Data" Target="/mnt/user/appdata/dns-monitoring" Default="/mnt/user/appdata/dns-monitoring" Mode="rw" Description="Application directory (contains cloned repo and data)" Type="Path" Display="always" Required="true" Mask="false"/>
+  <Config Name="Host Port" Target="3000" Default="3000" Mode="tcp" Description="Web UI port (change to your desired port like 8080)" Type="Port" Display="always" Required="true" Mask="false"/>
+  <Config Name="App Data" Target="/mnt/user/appdata/dns-monitoring" Default="/mnt/user/appdata/dns-monitoring" Mode="rw" Description="Application directory - clone repo here" Type="Path" Display="always" Required="true" Mask="false"/>
   <Config Name="Timezone" Target="TZ" Default="Asia/Singapore" Mode="" Description="Container timezone" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="NODE_ENV" Target="NODE_ENV" Default="production" Mode="" Description="Node environment" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="CORS Origin" Target="CORS_ORIGIN" Default="*" Mode="" Description="CORS origin for API" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="DNS Server" Target="DEFAULT_DNS_SERVER" Default="1.1.1.1" Mode="" Description="Default DNS server (1.1.1.1=Cloudflare, 8.8.8.8=Google)" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="Log Level" Target="LOG_LEVEL" Default="info" Mode="" Description="Log level (debug/info/warn/error)" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="NODE_ENV" Target="NODE_ENV" Default="production" Mode="" Description="Node environment (production/development)" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="CORS_ORIGIN" Target="CORS_ORIGIN" Default="*" Mode="" Description="CORS origin for API requests" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="DNS_SERVER" Target="DEFAULT_DNS_SERVER" Default="1.1.1.1" Mode="" Description="Default DNS server (1.1.1.1=Cloudflare, 8.8.8.8=Google, 9.9.9.9=Quad9)" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="Query_Timeout" Target="QUERY_TIMEOUT_MS" Default="5000" Mode="" Description="DNS query timeout in milliseconds" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="Log_Level" Target="LOG_LEVEL" Default="info" Mode="" Description="Log level (debug/info/warn/error)" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="Retention_Days" Target="QUERY_RETENTION_DAYS" Default="30" Mode="" Description="Days to keep DNS query history" Type="Variable" Display="always" Required="false" Mask="false"/>
 </Container>
