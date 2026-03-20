@@ -1,0 +1,22 @@
+# Backend Dockerfile for DNS Monitoring
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY backend/package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy source code
+COPY backend/src ./src
+
+# Create non-root user
+RUN addgroup -S appuser && adduser -S appuser -G appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
+EXPOSE 3000
+
+CMD ["npm", "start"]

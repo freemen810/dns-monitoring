@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Container version="2">
+  <Name>dns-monitoring</Name>
+  <Repository>ghcr.io/freemen810/dns-monitoring:latest</Repository>
+  <Registry>https://github.com/freemen810/dns-monitoring/pkgs/container/dns-monitoring</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/freemen810/dns-monitoring/issues</Support>
+  <Project>https://github.com/freemen810/dns-monitoring</Project>
+  <Overview>DNS Monitoring — self-hosted DNS query monitoring and analytics web application. Monitors DNS queries, tracks statistics, and provides real-time dashboards.</Overview>
+  <Category>Network</Category>
+  <WebUI>http://[IP]:[PORT:80]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/unraid-template.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/frontend/public/favicon.ico</Icon>
+  <ExtraParams>--restart=unless-stopped</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Config Name="Web UI Port" Target="80" Default="80" Mode="tcp" Description="HTTP port for web interface" Type="Port" Display="always" Required="true" Mask="false">80</Config>
+  <Config Name="Backend API Port" Target="3000" Default="3000" Mode="tcp" Description="Backend Express API port (typically exposed to frontend only)" Type="Port" Display="advanced" Required="false" Mask="false">3000</Config>
+  <Config Name="Data Path" Target="/app/data" Default="/mnt/user/appdata/dns-monitoring" Mode="rw" Description="Persistent data directory for DNS records and SQLite database" Type="Path" Display="advanced" Required="false" Mask="false">/mnt/user/appdata/dns-monitoring</Config>
+  <Config Name="NODE_ENV" Target="NODE_ENV" Default="production" Mode="" Description="Node environment (production or development)" Type="Variable" Display="advanced" Required="false" Mask="false">production</Config>
+  <Config Name="CORS_ORIGIN" Target="CORS_ORIGIN" Default="*" Mode="" Description="Allowed CORS origins (e.g., http://localhost:3000 or *)" Type="Variable" Display="advanced" Required="false" Mask="false">*</Config>
+</Container>

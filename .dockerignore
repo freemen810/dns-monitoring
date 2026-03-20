@@ -1,0 +1,59 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Frontend
+frontend/dist
+frontend/.vite
+frontend/coverage
+
+# Backend
+backend/data
+backend/logs
+backend/coverage
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Documentation
+README.md
+LICENSE
+CHANGELOG.md
+
+# Testing
+.nyc_output
+.coverage
+jest.config.js
+
+# Build
+dist
+build
+.next
+
+# Misc
+docker-compose.yml
+Dockerfile*
+nginx.conf
