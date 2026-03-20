@@ -84,9 +84,9 @@ DATA PERSISTENCE:
 CONFIGURATION:
 - Port: Configurable in template (default 3000)
 - DNS Server: Configure DEFAULT_DNS_SERVER variable
-  - 1.1.1.1 = Cloudflare
-  - 8.8.8.8 = Google
-  - 9.9.9.9 = Quad9
+  * 1.1.1.1 = Cloudflare
+  * 8.8.8.8 = Google
+  * 9.9.9.9 = Quad9
 - Query Timeout: Adjustable via QUERY_TIMEOUT_MS
 - Retention: Set via QUERY_RETENTION_DAYS
 - Logging: Control via LOG_LEVEL
@@ -97,7 +97,7 @@ https://hub.docker.com/r/freemen810/dns-monitoring
 GITHUB REPOSITORY:
 https://github.com/freemen810/dns-monitoring
 
-SUPPORT & ISSUES:
+SUPPORT:
 https://github.com/freemen810/dns-monitoring/issues
   </Description>
   <Config Name="Host Port" Target="3000" Default="3000" Mode="tcp" Description="Web UI port (change to your desired port)" Type="Port" Display="always" Required="true" Mask="false"/>
