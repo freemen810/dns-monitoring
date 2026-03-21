@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Container version="2">
   <Name>dns-monitoring</Name>
-  <Repository></Repository>
-  <Registry></Registry>
+  <Repository>https://github.com/freemen810/dns-monitoring</Repository>
+  <Registry>GitHub (docker-compose)</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>bash</Shell>
