@@ -9,37 +9,66 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/freemen810/dns-monitoring</Support>
   <Project>https://github.com/freemen810/dns-monitoring</Project>
-  <Overview>DNS Monitoring WebApp - Self-hosted DNS query monitoring and analytics. Multi-service deployment with nginx, backend API, and frontend UI.</Overview>
-  <Category>Network</Category>
+  <Overview>DNS Monitoring - Multi-service Docker deployment with nginx reverse proxy, Express.js API, and React frontend</Overview>
+  <Category>Network:DNS</Category>
   <WebUI>http://[IP]:[PORT:3000]</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/dns-monitoring-unraid-compose-template.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/icon.png</Icon>
   <ExtraParams/>
   <PostArgs/>
   <RunCmd>
-# 1. Clone the repository
-cd /mnt/user/appdata/dns-monitoring
-git clone https://github.com/freemen810/dns-monitoring.git . 2>/dev/null || git -C . pull
+# DNS Monitoring Unraid Deployment Script
 
-# 2. Create required directories
-mkdir -p /mnt/user/appdata/dns-monitoring/data
+set -e
 
-# 3. Set proper permissions
-chmod 755 /mnt/user/appdata/dns-monitoring/data
+APPDATA_PATH="/mnt/user/appdata/dns-monitoring"
 
-# 4. Start with docker-compose (Unraid config with local builds)
+echo "[1/5] Creating application directory..."
+mkdir -p "$APPDATA_PATH"
+cd "$APPDATA_PATH"
+
+echo "[2/5] Cloning/updating repository..."
+if [ -d ".git" ]; then
+  git -C "$APPDATA_PATH" pull --ff-only 2>/dev/null || true
+else
+  git clone https://github.com/freemen810/dns-monitoring.git . 2>/dev/null || true
+fi
+
+echo "[3/5] Creating data directory..."
+mkdir -p "$APPDATA_PATH/data"
+chmod 755 "$APPDATA_PATH/data"
+
+echo "[4/5] Building and starting services..."
 docker-compose -f docker-compose.unraid.yml up -d --build
 
-# 5. Wait for services to be healthy
+echo "[5/5] Waiting for services to start..."
 sleep 10
+
+echo ""
+echo "========================================="
+echo "DNS Monitoring Deployment Complete"
+echo "========================================="
 docker-compose -f docker-compose.unraid.yml ps
+echo ""
+echo "Access the application at: http://[IP]:3000"
+echo "==========================================="
   </RunCmd>
-  <StopCmd>cd /mnt/user/appdata/dns-monitoring && docker-compose -f docker-compose.unraid.yml down</StopCmd>
-  <RemoveCmd>cd /mnt/user/appdata/dns-monitoring && docker-compose -f docker-compose.unraid.yml down -v && rm -rf .</RemoveCmd>
+  <StopCmd>
+set -e
+cd /mnt/user/appdata/dns-monitoring
+docker-compose -f docker-compose.unraid.yml down
+  </StopCmd>
+  <RemoveCmd>
+set -e
+cd /mnt/user/appdata/dns-monitoring
+docker-compose -f docker-compose.unraid.yml down -v
+rm -rf /mnt/user/appdata/dns-monitoring
+  </RemoveCmd>
   <ReopenCommand/>
   <RestartPolicy>unless-stopped</RestartPolicy>
   <Environment>
-    <Variable Name="TZ" Value="Asia/Singapore" Description="Timezone"/>
+    <Variable Name="TZ" Value="Asia/Singapore" Description="Timezone for application"/>
+    <Variable Name="DATA_PATH" Value="/mnt/user/appdata/dns-monitoring/data" Description="Path for SQLite database"/>
   </Environment>
   <Networking>
     <Mode>bridge</Mode>
@@ -59,55 +88,140 @@ docker-compose -f docker-compose.unraid.yml ps
     </Volume>
   </Data>
   <Description>
-DNS Monitoring - Self-hosted DNS query monitoring and analytics web application.
+# DNS Monitoring - Multi-Service Docker Deployment
 
-This template uses docker-compose to build and deploy three services on your Unraid system:
-- Backend API (Express.js on port 3000)
-- Frontend UI (React/Vite)
-- Reverse Proxy (nginx on port 3000)
+Self-hosted DNS query monitoring and analytics dashboard with real-time monitoring capabilities.
 
-Installation:
-1. Add this container via template
+## Architecture
+
+This deployment uses Docker Compose to run three integrated services:
+
+- **nginx** (Reverse Proxy) - Listens on port 3000, routes traffic to backend API and frontend UI
+- **backend** (Node.js/Express) - REST API for DNS monitoring, database operations, and query processing
+- **frontend** (React/Vite) - Web-based dashboard for viewing DNS queries and analytics
+
+All services run on a private bridge network for secure inter-service communication.
+
+## Installation Steps
+
+1. Click "Apply" to add this container
 2. The RunCmd will automatically:
-   - Clone the GitHub repository to /mnt/user/appdata/dns-monitoring
-   - Create data directory with proper permissions
-   - Build Docker images from source (backend, frontend)
-   - Start all services with docker-compose
-   - Services communicate on internal bridge network
+   - Create /mnt/user/appdata/dns-monitoring directory
+   - Clone the GitHub repository
+   - Build Docker images from source code
+   - Start all three services using docker-compose
+   - Display service status
 
-Features:
+3. Wait 2-3 minutes for initial build and startup
+4. Access the web interface at: http://[IP]:3000
+
+## Features
+
 - Real-time DNS query monitoring and logging
-- React-based web dashboard
-- Express.js REST API
+- React-based responsive web dashboard
+- Express.js REST API backend
 - SQLite database for persistent storage
 - Query analytics and reporting
-- Configurable DNS servers
-- Multi-service Docker architecture
+- Configurable DNS servers (default: 1.1.1.1)
+- Timezone support
+- Health checks on all services
 
-Architecture:
-- nginx (port 3000) → routes to backend API and frontend
-- backend (internal port 3000) → Node.js Express API
-- frontend (internal port 5173) → React/Vite app
-- All on dns-monitoring bridge network for inter-service communication
+## Data Storage
 
-Access:
-- Web UI: http://[IP]:3000
-- All services start automatically
+- **Database Location**: /mnt/user/appdata/dns-monitoring/data/dns-monitoring.db
+- **Project Files**: /mnt/user/appdata/dns-monitoring/
+- **Docker Volumes**:
+  - dns-data (SQLite database)
+  - nginx-cache (nginx caching)
 
-Data:
-- Database: /mnt/user/appdata/dns-monitoring/data/dns-monitoring.db
-- Project files: /mnt/user/appdata/dns-monitoring
-- Persistent volumes: dns-data, nginx-cache
+## Configuration
 
-Troubleshooting:
-- Check logs: docker logs dns-monitoring-backend
-- Verify services: docker-compose -f docker-compose.unraid.yml ps
-- Restart: Stop container, then Start
+### Environment Variables
 
-GitHub: https://github.com/freemen810/dns-monitoring
+- `TZ`: Timezone (default: Asia/Singapore) - Set to your timezone
+- `DATA_PATH`: Database storage path (auto-configured)
+
+### Network
+
+- Internal bridge network: dns-monitoring
+- External port: 3000 (HTTP)
+- Internal ports:
+  - backend: 3000
+  - frontend: 5173
+  - nginx: 80 (internal)
+
+## Accessing the Application
+
+- **Web UI**: http://[YOUR_UNRAID_IP]:3000
+- **API Endpoint**: http://[YOUR_UNRAID_IP]:3000/api
+
+## Troubleshooting
+
+### Check Service Status
+```
+ssh root@[UNRAID_IP]
+cd /mnt/user/appdata/dns-monitoring
+docker-compose -f docker-compose.unraid.yml ps
+```
+
+### View Logs
+```
+docker logs dns-monitoring-backend
+docker logs dns-monitoring-frontend
+docker logs dns-monitoring-nginx
+```
+
+### Restart Services
+- In Unraid WebUI: Click "Stop" then "Start"
+- Or via SSH:
+```
+cd /mnt/user/appdata/dns-monitoring
+docker-compose -f docker-compose.unraid.yml restart
+```
+
+### Database Issues
+If experiencing SQLite errors:
+1. Verify permissions: `ls -la /mnt/user/appdata/dns-monitoring/data/`
+2. Check disk space: `df /mnt/user/appdata/`
+3. Restart containers: Stop and Start in Unraid WebUI
+
+### Network Issues
+If nginx can't reach backend:
+1. Verify all services are running: `docker-compose ps`
+2. Check bridge network: `docker network inspect dns-monitoring`
+3. View nginx error logs: `docker logs dns-monitoring-nginx`
+
+## Performance Notes
+
+- First startup takes 3-5 minutes for Docker image builds
+- Subsequent restarts are faster (30-60 seconds)
+- Initial database creation is automatic
+- Layer caching speeds up rebuilds
+
+## Updates
+
+To update to the latest version:
+1. SSH into Unraid
+2. Navigate to: `cd /mnt/user/appdata/dns-monitoring`
+3. Update code: `git pull`
+4. Restart: `docker-compose -f docker-compose.unraid.yml up -d --build`
+
+## Support
+
+- GitHub Repository: https://github.com/freemen810/dns-monitoring
+- Issue Tracker: https://github.com/freemen810/dns-monitoring/issues
+- Discussions: https://github.com/freemen810/dns-monitoring/discussions
+
+## Security Notes
+
+- All services run as non-root users
+- No privileged container access required
+- Database stored on local encrypted Unraid disk
+- Network isolation via bridge network
+- CORS enabled for local network access
   </Description>
   <Labels/>
-  <Config Name="WebUI Port" Target="3000" Default="3000" Mode="tcp" Description="Port for web interface" Type="Port" Display="always" Required="true" Mask="false"/>
-  <Config Name="App Data Path" Target="/mnt/user/appdata/dns-monitoring" Default="/mnt/user/appdata/dns-monitoring" Mode="rw" Description="Path for application and database" Type="Path" Display="always" Required="true" Mask="false"/>
-  <Config Name="Timezone" Target="TZ" Default="Asia/Singapore" Mode="" Description="Container timezone" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="WebUI Port" Target="3000" Default="3000" Mode="tcp" Description="Port for web interface access" Type="Port" Display="always" Required="true" Mask="false"/>
+  <Config Name="App Data Path" Target="/mnt/user/appdata/dns-monitoring" Default="/mnt/user/appdata/dns-monitoring" Mode="rw" Description="Path for application data and database" Type="Path" Display="always" Required="true" Mask="false"/>
+  <Config Name="Timezone" Target="TZ" Default="Asia/Singapore" Mode="" Description="Timezone for application (e.g., America/New_York, Europe/London, Asia/Tokyo)" Type="Variable" Display="always" Required="false" Mask="false"/>
 </Container>
