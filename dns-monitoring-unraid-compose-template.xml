@@ -9,7 +9,7 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/freemen810/dns-monitoring</Support>
   <Project>https://github.com/freemen810/dns-monitoring</Project>
-DNS Monitoring WebApp - Self-hosted DNS query monitoring and analytics. Multi-service deployment with nginx, backend API, and frontend UI.</Overview>
+  <Overview>DNS Monitoring WebApp - Self-hosted DNS query monitoring and analytics. Multi-service deployment with nginx, backend API, and frontend UI.</Overview>
   <Category>Network</Category>
   <WebUI>http://[IP]:[PORT:3000]</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/freemen810/dns-monitoring/main/dns-monitoring-unraid-compose-template.xml</TemplateURL>
