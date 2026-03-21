@@ -27,15 +27,15 @@ mkdir -p /mnt/user/appdata/dns-monitoring/data
 # 3. Set proper permissions
 chmod 755 /mnt/user/appdata/dns-monitoring/data
 
-# 4. Start with docker-compose (production config)
-docker-compose -f docker-compose.prod.yml up -d
+# 4. Start with docker-compose (Unraid config with local builds)
+docker-compose -f docker-compose.unraid.yml up -d --build
 
 # 5. Wait for services to be healthy
-sleep 5
-docker-compose -f docker-compose.prod.yml ps
+sleep 10
+docker-compose -f docker-compose.unraid.yml ps
   </RunCmd>
-  <StopCmd>cd /mnt/user/appdata/dns-monitoring && docker-compose -f docker-compose.prod.yml down</StopCmd>
-  <RemoveCmd>cd /mnt/user/appdata/dns-monitoring && docker-compose -f docker-compose.prod.yml down -v && rm -rf .</RemoveCmd>
+  <StopCmd>cd /mnt/user/appdata/dns-monitoring && docker-compose -f docker-compose.unraid.yml down</StopCmd>
+  <RemoveCmd>cd /mnt/user/appdata/dns-monitoring && docker-compose -f docker-compose.unraid.yml down -v && rm -rf .</RemoveCmd>
   <ReopenCommand/>
   <RestartPolicy>unless-stopped</RestartPolicy>
   <Environment>
@@ -61,14 +61,19 @@ docker-compose -f docker-compose.prod.yml ps
   <Description>
 DNS Monitoring - Self-hosted DNS query monitoring and analytics web application.
 
-This template uses docker-compose to build from source on your Unraid system.
+This template uses docker-compose to build and deploy three services on your Unraid system:
+- Backend API (Express.js on port 3000)
+- Frontend UI (React/Vite)
+- Reverse Proxy (nginx on port 3000)
 
 Installation:
 1. Add this container via template
 2. The RunCmd will automatically:
    - Clone the GitHub repository to /mnt/user/appdata/dns-monitoring
-   - Build the Docker image
-   - Start the container
+   - Create data directory with proper permissions
+   - Build Docker images from source (backend, frontend)
+   - Start all services with docker-compose
+   - Services communicate on internal bridge network
 
 Features:
 - Real-time DNS query monitoring and logging
@@ -77,6 +82,13 @@ Features:
 - SQLite database for persistent storage
 - Query analytics and reporting
 - Configurable DNS servers
+- Multi-service Docker architecture
+
+Architecture:
+- nginx (port 3000) → routes to backend API and frontend
+- backend (internal port 3000) → Node.js Express API
+- frontend (internal port 5173) → React/Vite app
+- All on dns-monitoring bridge network for inter-service communication
 
 Access:
 - Web UI: http://[IP]:3000
@@ -85,6 +97,12 @@ Access:
 Data:
 - Database: /mnt/user/appdata/dns-monitoring/data/dns-monitoring.db
 - Project files: /mnt/user/appdata/dns-monitoring
+- Persistent volumes: dns-data, nginx-cache
+
+Troubleshooting:
+- Check logs: docker logs dns-monitoring-backend
+- Verify services: docker-compose -f docker-compose.unraid.yml ps
+- Restart: Stop container, then Start
 
 GitHub: https://github.com/freemen810/dns-monitoring
   </Description>
