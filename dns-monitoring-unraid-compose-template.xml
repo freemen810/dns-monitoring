@@ -2,7 +2,7 @@
 <Container version="2">
   <Name>dns-monitoring</Name>
   <Repository>https://github.com/freemen810/dns-monitoring</Repository>
-  <Registry>GitHub (docker-compose)</Registry>
+  <Registry>GHCR - freemen810/dns-monitoring</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>bash</Shell>
@@ -38,8 +38,9 @@ echo "[3/5] Creating data directory..."
 mkdir -p "$APPDATA_PATH/data"
 chmod 755 "$APPDATA_PATH/data"
 
-echo "[4/5] Building and starting services..."
-docker-compose -f docker-compose.unraid.yml up -d --build
+echo "[4/5] Pulling and starting services from GHCR..."
+docker-compose -f docker-compose.unraid.yml pull
+docker-compose -f docker-compose.unraid.yml up -d
 
 echo "[5/5] Waiting for services to start..."
 sleep 10
@@ -108,11 +109,11 @@ All services run on a private bridge network for secure inter-service communicat
 2. The RunCmd will automatically:
    - Create /mnt/user/appdata/dns-monitoring directory
    - Clone the GitHub repository
-   - Build Docker images from source code
+   - Pull pre-built Docker images from GHCR
    - Start all three services using docker-compose
    - Display service status
 
-3. Wait 2-3 minutes for initial build and startup
+3. Wait 1-2 minutes for services to start (no build needed)
 4. Access the web interface at: http://[IP]:3000
 
 ## Features
@@ -193,18 +194,19 @@ If nginx can't reach backend:
 
 ## Performance Notes
 
-- First startup takes 3-5 minutes for Docker image builds
+- First startup takes 1-2 minutes (images pulled from GHCR, no build needed)
 - Subsequent restarts are faster (30-60 seconds)
 - Initial database creation is automatic
-- Layer caching speeds up rebuilds
+- Images are pre-built and cached in GHCR for faster deployment
 
 ## Updates
 
-To update to the latest version:
+To update to the latest version from GHCR:
 1. SSH into Unraid
 2. Navigate to: `cd /mnt/user/appdata/dns-monitoring`
-3. Update code: `git pull`
-4. Restart: `docker-compose -f docker-compose.unraid.yml up -d --build`
+3. Pull latest images: `docker-compose -f docker-compose.unraid.yml pull`
+4. Restart: `docker-compose -f docker-compose.unraid.yml up -d`
+5. Or simply restart the container in Unraid WebUI
 
 ## Support
 

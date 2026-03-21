@@ -5,9 +5,14 @@ on:
     branches: [ main ]
     paths:
       - 'Dockerfile'
+      - 'Dockerfile.backend'
+      - 'Dockerfile.frontend'
       - 'backend/**'
       - 'frontend/**'
       - 'docker-compose.yml'
+      - 'docker-compose.unraid.yml'
+      - 'docker-compose.prod.yml'
+      - '.dockerignore'
       - '.github/workflows/docker-publish.yml'
 
 jobs:
@@ -34,7 +39,10 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
+          file: ./Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ github.sha }}
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
           cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
