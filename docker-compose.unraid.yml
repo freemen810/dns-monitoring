@@ -1,12 +1,12 @@
 version: '3.8'
 
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    container_name: dns-monitoring-backend
+  app:
+    image: ghcr.io/freemen810/dns-monitoring:latest
+    container_name: dns-monitoring
     restart: unless-stopped
+    ports:
+      - "3000:80"
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -17,57 +17,10 @@ services:
       - LOG_LEVEL=info
       - QUERY_RETENTION_DAYS=30
     volumes:
-      - dns-data:/app/data
-    networks:
-      - dns-monitoring
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
-    container_name: dns-monitoring-frontend
-    restart: unless-stopped
-    environment:
-      - TZ=${TZ:-Asia/Singapore}
-      - VITE_API_URL=http://localhost/api
-    networks:
-      - dns-monitoring
-    depends_on:
-      backend:
-        condition: service_healthy
-
-  nginx:
-    image: nginx:alpine
-    container_name: dns-monitoring-nginx
-    restart: unless-stopped
-    ports:
-      - "3000:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - nginx-cache:/var/cache/nginx
-    networks:
-      - dns-monitoring
-    depends_on:
-      - backend
-      - frontend
+      - /mnt/user/appdata/dns-monitoring/data:/app/data
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-
-networks:
-  dns-monitoring:
-    driver: bridge
-
-volumes:
-  dns-data:
-    driver: local
-  nginx-cache:
-    driver: local
+      start_period: 40s
