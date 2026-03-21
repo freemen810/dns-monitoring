@@ -2,7 +2,7 @@
 <Container version="2">
   <Name>dns-monitoring</Name>
   <Repository>https://github.com/freemen810/dns-monitoring</Repository>
-  <Registry>GHCR - freemen810/dns-monitoring</Registry>
+  <Registry>ghcr.io/freemen810/dns-monitoring</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>bash</Shell>
@@ -109,12 +109,19 @@ All services run on a private bridge network for secure inter-service communicat
 2. The RunCmd will automatically:
    - Create /mnt/user/appdata/dns-monitoring directory
    - Clone the GitHub repository
-   - Pull pre-built Docker images from GHCR
+   - Pull pre-built Docker images from GHCR (ghcr.io/freemen810/dns-monitoring:latest)
    - Start all three services using docker-compose
    - Display service status
 
 3. Wait 1-2 minutes for services to start (no build needed)
 4. Access the web interface at: http://[IP]:3000
+
+## Docker Image Source
+
+**Image**: ghcr.io/freemen810/dns-monitoring:latest
+**Registry**: GitHub Container Registry (GHCR)
+**Auto-builds**: Enabled on GitHub Actions (every commit)
+**No credentials needed** for public GHCR image
 
 ## Features
 
